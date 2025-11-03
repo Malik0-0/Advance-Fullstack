@@ -1,0 +1,45 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor / OS junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Postman files (optional)
+.postman/
+
+# Coverage (if you add tests later)
+coverage/
+
+# Lock files (optional — only if you want clean installs)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
