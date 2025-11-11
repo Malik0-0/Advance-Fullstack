@@ -2,19 +2,12 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-/**
- * GET /orders/summary
- * Returns total orders count and total amount per user.
- * Query:
- *  - limit, offset (pagination on summary rows)
- *  - minTotal (optional: filter users whose _sum.total >= minTotal)
- */
 export const ordersSummary = async (req: Request, res: Response) => {
   const limit = req.query.limit ? Number(req.query.limit) : 10;
   const offset = req.query.offset ? Number(req.query.offset) : 0;
   const minTotal = req.query.minTotal ? Number(req.query.minTotal) : undefined;
 
-  // 1) group orders by userId
+  // group orders by userId
   const grouped = await prisma.order.groupBy({
     by: ["userId"],
     _count: { _all: true },
@@ -22,7 +15,7 @@ export const ordersSummary = async (req: Request, res: Response) => {
     orderBy: { userId: "asc" },
   });
 
-  // 2) optional filter + pagination (done in memory since Prisma groupBy doesn't support having on aggregates + pagination together easily)
+  // filter + pagination
   const filtered = grouped.filter(g => {
     if (typeof minTotal === "number") {
       const sum = g._sum?.total ?? 0;
@@ -34,7 +27,7 @@ export const ordersSummary = async (req: Request, res: Response) => {
   const totalRows = filtered.length;
   const pageRows = filtered.slice(offset, offset + limit);
 
-  // 3) fetch user info for the page rows
+  // fetch user info for the page rows
   const userIds = pageRows.map(r => r.userId);
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },

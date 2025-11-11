@@ -71,7 +71,7 @@ export const createOrder = async (req: Request, res: Response) => {
       const total = computeTotal(itemRows);
       const order = await tx.order.create({
         data: {
-          userId,        // <- use relation field that actually exists
+          userId,        
           total,
           items: { create: itemRows },
         },

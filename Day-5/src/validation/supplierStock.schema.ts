@@ -4,7 +4,7 @@ export const StockItemSchema = z.object({
   supplierId: z.number().int().positive(),
   productId:  z.number().int().positive(),
   type:       z.enum(["IN", "OUT"]),
-  quantity:   z.number().int().positive(), // always positive; OUT turns it negative in logic
+  quantity:   z.number().int().positive(),
   note:       z.string().max(200).optional(),
 });
 
