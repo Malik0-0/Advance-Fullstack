@@ -1,0 +1,38 @@
+import express from "express";
+import productsRoute from "./routes/products.route";
+import ordersRoute from "./routes/orders.route";
+import ordersSummaryRoute from "./routes/order.summary.route";
+import { errorMiddleware } from "./middlewares/error.middleware";
+import suppliersRoute from "./routes/suppliers.route";
+import { respondMiddleware } from "./middlewares/respond.middleware";
+import suppliersAuthRoute from "./routes/suppliers.auth.route";
+import suppliersProductsRoute from "./routes/suppliers.products.route";
+import cookieParser from "cookie-parser";
+import productsImageRoute from "./routes/products.image.route";
+import { corsMiddleware } from "./middlewares/cors.middleware";
+import { globalRateLimiter } from "./middlewares/rate-limit.middleware";
+
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(errorMiddleware);
+app.use(respondMiddleware);
+// CORS
+app.use(corsMiddleware);
+
+// rate limiter (global)
+app.use(globalRateLimiter);
+
+app.use(suppliersAuthRoute);
+app.use(suppliersProductsRoute);
+
+app.get("/health", (_req, res) => res.json({ ok: true }));
+
+app.use("/products", productsRoute);
+app.use("/orders/summary", ordersSummaryRoute);
+app.use("/orders", ordersRoute);
+app.use("/suppliers", suppliersRoute);   
+app.use("/", productsImageRoute);      
+
+export default app;
